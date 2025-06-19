@@ -68,10 +68,14 @@ func (h *ProfileHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Info("Successfully logged in!")
+	id, _ := uuid.Parse(response.GetUserId().Value)
 
-	utils.RenderJson(w, domain.TokenResponse{
-		Access: response.AccessToken,
-		Refresh: response.RefreshToken,
+	utils.RenderJson(w, domain.LoginResponse{
+		UserId: id,
+		TokenResponse: domain.TokenResponse{
+			Access: response.GetTokens().AccessToken,
+			Refresh: response.GetTokens().RefreshToken,
+		},
 	})
 }
 
