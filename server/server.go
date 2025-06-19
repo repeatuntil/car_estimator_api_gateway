@@ -20,6 +20,7 @@ type IHandler interface {
 
 type Server struct {
 	r *mux.Router
+	port string
 	logger *slog.Logger
 	handlers map[string]IHandler
 }
@@ -28,6 +29,8 @@ func NewServer(conf *config.Config, logger *slog.Logger) *Server {
 	s := new(Server)
 	s.r = mux.NewRouter()
 	s.logger = logger
+	s.port = conf.Port
+	s.handlers = map[string]IHandler{}
 
 	defer func(){
 		if r := recover(); r != nil {
@@ -42,15 +45,15 @@ func NewServer(conf *config.Config, logger *slog.Logger) *Server {
 		logger: s.logger, 
 	}, MustConnect(conf.ProfileServiceAddr))
 	
-	s.RegisterHandler("feed", &FeedHandler{
-		r: s.r.PathPrefix("/feed").Subrouter(),
-		logger: s.logger, 
-	}, MustConnect(conf.FeedServiceAddr))
+	// s.RegisterHandler("feed", &FeedHandler{
+	// 	r: s.r.PathPrefix("/feed").Subrouter(),
+	// 	logger: s.logger, 
+	// }, MustConnect(conf.FeedServiceAddr))
 
-	s.RegisterHandler("prediction", &PredictionHandler{
-		r: s.r.PathPrefix("/prediction").Subrouter(),
-		logger: s.logger, 
-	}, MustConnect(conf.PredictionServiceAddr))
+	// s.RegisterHandler("prediction", &PredictionHandler{
+	// 	r: s.r.PathPrefix("/prediction").Subrouter(),
+	// 	logger: s.logger, 
+	// }, MustConnect(conf.PredictionServiceAddr))
 
 	s.logger.Info("Handlers registration completed!")
 
@@ -94,9 +97,11 @@ func (s *Server) RegisterHandler(name string, h IHandler, conn *grpc.ClientConn)
 	s.handlers[name] = h
 }
 
-func (s *Server) Run(port string) error {
+func (s *Server) Run() error {
 	for _, handler := range s.handlers {
 		handler.setupRoutes()
 	}
-	return http.ListenAndServe(":" + port, s.r)
+
+	s.logger.Info("Running API Gateway server...", slog.String("port", s.port))
+	return http.ListenAndServe(":" + s.port, s.r)
 }

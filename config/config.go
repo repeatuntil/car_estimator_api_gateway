@@ -9,6 +9,7 @@ import (
 
 type Config struct {
 	Env                   string
+	Port				  string
 	ProfileServiceAddr    string
 	PredictionServiceAddr string
 	FeedServiceAddr       string
@@ -21,6 +22,7 @@ func Load(envfile string) (*Config, error) {
 
 	return &Config{
 		Env: os.Getenv("MODE"),
+		Port: os.Getenv("SERVE_PORT"),
 		ProfileServiceAddr: os.Getenv("PROFILE_SERVICE_ADDR"),
 		PredictionServiceAddr: os.Getenv("PREDICTION_SERVICE_ADDR"),
 		FeedServiceAddr: os.Getenv("FEED_SERVICE_ADDR"),

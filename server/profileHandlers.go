@@ -31,7 +31,7 @@ func (h *ProfileHandler) setupRoutes() {
 	h.r.HandleFunc("/logout", h.LogoutHandler).Methods("DELETE")
 	h.r.HandleFunc("/register", h.RegisterHandler).Methods("POST")
 	h.r.HandleFunc("/unregister", h.UnregisterHandler).Methods("DELETE")
-	h.r.HandleFunc("/{userId}", h.GetUserHandler).Methods("GET")
+	h.r.HandleFunc("/users/{userId}", h.GetUserHandler).Methods("GET")
 }
 
 func (h *ProfileHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +62,7 @@ func (h *ProfileHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		utils.HandleResponseErr(w, h.logger, "login failed", err)
+		utils.HandleResponseErr(w, h.logger, "login failed - ", err)
 		return
 	}
 
@@ -90,7 +90,7 @@ func (h *ProfileHandler) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	ctx := metadata.NewOutgoingContext(r.Context(), md)
 	if _, err := h.client.Logout(ctx, &emptypb.Empty{}); err != nil {
-		utils.HandleResponseErr(w, h.logger, "logout failed", err)
+		utils.HandleResponseErr(w, h.logger, "logout failed - ", err)
 		return
 	}
 
@@ -123,7 +123,7 @@ func (h *ProfileHandler) GetUserHandler(w http.ResponseWriter, r *http.Request) 
 	})
 
 	if err != nil {
-		utils.HandleResponseErr(w, h.logger, "get user op failed", err)
+		utils.HandleResponseErr(w, h.logger, "get user op failed - ", err)
 		return
 	}
 
@@ -144,6 +144,7 @@ func (h *ProfileHandler) GetUserHandler(w http.ResponseWriter, r *http.Request) 
 func (h *ProfileHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	body := &domain.RegisterRequest{}
 	if err := utils.ParseJson(r.Body, body); err != nil {
+		h.logger.Error(err.Error())
 		http.Error(w, "register request body decode failed", http.StatusBadRequest)
 		return
 	}
@@ -154,17 +155,25 @@ func (h *ProfileHandler) RegisterHandler(w http.ResponseWriter, r *http.Request)
 		slog.String("email", body.Email),
 	)
 
+	bd, err := time.Parse("2006-01-02", body.BirthDate)
+	if err != nil {
+		http.Error(w, "birthDate has wrong format", http.StatusBadRequest)
+		return
+	}
+
 	log.Info("Start register process. Calling profile gRPC service...")
+	
 
 	response, err := h.client.Register(r.Context(), &profile.RegisterRequest{
 		Fullname: body.FullName,
 		Email: body.Email,
+		Phone: body.Phone,
 		Password: body.Password,
-		Birthdate: body.BirthDate.Unix(),
+		Birthdate: bd.Unix(),
 	})
 
 	if err != nil {
-		utils.HandleResponseErr(w, h.logger, "register failed", err)
+		utils.HandleResponseErr(w, h.logger, "register failed - ", err)
 		return
 	}
 
@@ -192,7 +201,7 @@ func (h *ProfileHandler) UnregisterHandler(w http.ResponseWriter, r *http.Reques
 
 	ctx := metadata.NewOutgoingContext(r.Context(), md)
 	if _, err := h.client.Unregister(ctx, &emptypb.Empty{}); err != nil {
-		utils.HandleResponseErr(w, h.logger, "unregister failed", err)
+		utils.HandleResponseErr(w, h.logger, "unregister failed - ", err)
 		return
 	}
 

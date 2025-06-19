@@ -11,7 +11,7 @@ type RegisterRequest struct {
 	Email string	`json:"email"`
 	Phone string	`json:"phone"`	
 	Password string	`json:"password"`
-	BirthDate time.Time	`json:"birthDate"`
+	BirthDate string	`json:"birthDate"`
 }
 
 type RegisterResponse struct {

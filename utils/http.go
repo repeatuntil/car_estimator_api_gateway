@@ -26,10 +26,11 @@ func HandleResponseErr(w http.ResponseWriter, logger *slog.Logger, msg string, e
 	st, ok := status.FromError(err)
 	if !ok {
 		logger.Warn("Non-gRPC error", slog.Any("error", err))
-		return
+		http.Error(w, err.Error(), code)
+		return 
 	}
 	code = CodeMapper[st.Code()]
-	http.Error(w, msg, code)
+	http.Error(w, msg + st.Message(), code)
 }
 
 func GetClientIp(r *http.Request) string {
