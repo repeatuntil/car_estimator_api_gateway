@@ -28,6 +28,11 @@ type TokenResponse struct {
 	Refresh string	`json:"refreshToken"`
 }
 
+type LoginResponse struct {
+	UserId uuid.UUID `json:"userId"`
+	TokenResponse
+}
+
 type UserResponse struct {
 	Id uuid.UUID `json:"userId"`
 	FullName string `json:"fullName"`
