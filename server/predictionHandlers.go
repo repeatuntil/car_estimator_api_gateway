@@ -28,7 +28,7 @@ func (h *PredictionHandler) setupgRPC(conn *grpc.ClientConn) {
 }
 
 func (h *PredictionHandler) setupRoutes() {
-	h.r.HandleFunc("/", h.PredictionHandler).Methods("POST")
+	h.r.HandleFunc("", h.PredictionHandler).Methods("POST")
 }
 
 func (h *PredictionHandler) PredictionHandler(w http.ResponseWriter, r *http.Request) {
@@ -39,6 +39,7 @@ func (h *PredictionHandler) PredictionHandler(w http.ResponseWriter, r *http.Req
 	params := new(domain.PredictionRequest)
 	if err := utils.ParseJson(r.Body, params); err != nil {
 		http.Error(w, "failed to decode prediction request body: " + err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	log.Info(
