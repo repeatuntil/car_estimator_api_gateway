@@ -50,10 +50,10 @@ func NewServer(conf *config.Config, logger *slog.Logger) *Server {
 	// 	logger: s.logger, 
 	// }, MustConnect(conf.FeedServiceAddr))
 
-	// s.RegisterHandler("prediction", &PredictionHandler{
-	// 	r: s.r.PathPrefix("/prediction").Subrouter(),
-	// 	logger: s.logger, 
-	// }, MustConnect(conf.PredictionServiceAddr))
+	s.RegisterHandler("prediction", &PredictionHandler{
+		r: s.r.PathPrefix("/prediction").Subrouter(),
+		logger: s.logger, 
+	}, MustConnect(conf.PredictionServiceAddr))
 
 	s.logger.Info("Handlers registration completed!")
 
