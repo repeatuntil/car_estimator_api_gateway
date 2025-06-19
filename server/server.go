@@ -45,10 +45,10 @@ func NewServer(conf *config.Config, logger *slog.Logger) *Server {
 		logger: s.logger, 
 	}, MustConnect(conf.ProfileServiceAddr))
 	
-	// s.RegisterHandler("feed", &FeedHandler{
-	// 	r: s.r.PathPrefix("/feed").Subrouter(),
-	// 	logger: s.logger, 
-	// }, MustConnect(conf.FeedServiceAddr))
+	s.RegisterHandler("feed", &FeedHandler{
+		r: s.r.PathPrefix("/feed").Subrouter(),
+		logger: s.logger, 
+	}, MustConnect(conf.FeedServiceAddr))
 
 	s.RegisterHandler("prediction", &PredictionHandler{
 		r: s.r.PathPrefix("/prediction").Subrouter(),
