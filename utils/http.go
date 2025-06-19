@@ -29,6 +29,7 @@ func HandleResponseErr(w http.ResponseWriter, logger *slog.Logger, msg string, e
 		http.Error(w, err.Error(), code)
 		return 
 	}
+	logger.Error(msg + st.Message())
 	code = CodeMapper[st.Code()]
 	http.Error(w, msg + st.Message(), code)
 }
@@ -39,4 +40,12 @@ func GetClientIp(r *http.Request) string {
 		return strings.Split(ipList, ",")[0]
 	}
 	return r.RemoteAddr
+}
+
+func GetAccessToken(r *http.Request) string {
+	token := r.Header.Get("Authorization")
+	if len(token) > len("Bearer ") {
+		token = token[len("Bearer "):]
+	}
+	return token
 }

@@ -32,6 +32,7 @@ func (h *ProfileHandler) setupRoutes() {
 	h.r.HandleFunc("/register", h.RegisterHandler).Methods("POST")
 	h.r.HandleFunc("/unregister", h.UnregisterHandler).Methods("DELETE")
 	h.r.HandleFunc("/users/{userId}", h.GetUserHandler).Methods("GET")
+	h.r.HandleFunc("/refresh", h.RefreshHandler).Methods("POST")
 }
 
 func (h *ProfileHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -141,6 +142,38 @@ func (h *ProfileHandler) GetUserHandler(w http.ResponseWriter, r *http.Request) 
 	})
 }
 
+func (h *ProfileHandler) RefreshHandler(w http.ResponseWriter, r *http.Request) {
+	log := h.logger.With(
+		slog.String("operation", "refresh tokens"),
+	)
+
+	log.Info("Start refreshing process. Calling profile gRPC service...")
+
+	refreshToken := r.Header.Get("RefreshToken")
+	ipAddr := utils.GetClientIp(r) 
+	userAgent := r.UserAgent()
+
+	md := metadata.Pairs(
+		"refreshToken", refreshToken,
+	)
+
+	ctx := metadata.NewOutgoingContext(r.Context(), md)
+	response, err := h.client.Refresh(ctx, &profile.SourceData{
+		Ip: ipAddr,
+		UserAgent: userAgent,
+	})
+
+	if err != nil {
+		utils.HandleResponseErr(w, h.logger, "refresh op failed - ", err)
+		return
+	}
+
+	utils.RenderJson(w, domain.TokenResponse{
+		Access: response.GetAccessToken(),
+		Refresh: response.GetRefreshToken(),
+	})
+}
+
 func (h *ProfileHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	body := &domain.RegisterRequest{}
 	if err := utils.ParseJson(r.Body, body); err != nil {
@@ -162,7 +195,6 @@ func (h *ProfileHandler) RegisterHandler(w http.ResponseWriter, r *http.Request)
 	}
 
 	log.Info("Start register process. Calling profile gRPC service...")
-	
 
 	response, err := h.client.Register(r.Context(), &profile.RegisterRequest{
 		Fullname: body.FullName,
