@@ -3,37 +3,34 @@ package domain
 import "time"
 
 type CarListing struct {
-	ListingID        string    `json:"listing_id"`
-	SellerID         string    `json:"seller_id"`
+	ListingId        string    `json:"listing_id"`
+	SellerId         string    `json:"seller_id"`
 	Description      string    `json:"description"`
 	PostedAt         time.Time `json:"posted_at"`
 	Status           string    `json:"status"`
 	DealType         string    `json:"deal_type"`
 	Price            float64   `json:"price"`
-
-	CarID            string    `json:"car_id"`
+	Tags             []string  `json:"tags"`
+	CarId            string    `json:"car_id"`
 	Mileage          int32     `json:"mileage"`
 	OwnersCount      int32     `json:"owners_count"`
 	AccidentsCount   int32     `json:"accidents_count"`
 	Condition        string    `json:"condition"`
 	Color            string    `json:"color"`
-
-	ConfigID         string    `json:"config_id"`
+	ConfigId         string    `json:"config_id"`
 	EngineType       string    `json:"engine_type"`
 	EngineVolume     string    `json:"engine_volume"`
 	EnginePower      int32     `json:"engine_power"`
 	Cylinders        int32     `json:"cylinders"`
 	Transmission     string    `json:"transmission"`
 	Drivetrain       string    `json:"drivetrain"`
-
-	ModelID          string    `json:"model_id"`
+	ModelId          string    `json:"model_id"`
 	ModelName        string    `json:"model_name"`
 	Make             string    `json:"make"`
 	Year             int32     `json:"year"`
 	BodyType         string    `json:"body_type"`
 	Generation       string    `json:"generation"`
 	WeightKg         float64   `json:"weight_kg"`
-
 	SellerName       string    `json:"seller_name"`
 	SellerRating     float64   `json:"seller_rating"`
 	SellerSalesCount int32     `json:"seller_sales_count"`
@@ -97,7 +94,7 @@ type DeleteListingResponse struct {
 }
 
 type AddToFavoritesRequest struct {
-	ListingID string `json:"listing_id"`
+	ListingId string `json:"listing_id"`
 }
 
 type AddToFavoritesResponse struct {

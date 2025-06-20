@@ -78,27 +78,27 @@ func (h *FeedHandler) ListListings(w http.ResponseWriter, r *http.Request) {
 	}
 	for i, c := range grpcResp.Listings {
 		out.Listings[i] = domain.CarListing{
-			ListingID:        c.ListingId,
-			SellerID:         c.SellerId,
+			ListingId:        c.ListingId,
+			SellerId:         c.SellerId,
 			Description:      c.Description,
 			PostedAt:         c.PostedAt.AsTime(),
 			Status:           c.Status,
 			DealType:         c.DealType,
 			Price:            c.Price,
-			CarID:            c.CarId,
+			CarId:            c.CarId,
 			Mileage:          c.Mileage,
 			OwnersCount:      c.OwnersCount,
 			AccidentsCount:   c.AccidentsCount,
 			Condition:        c.Condition,
 			Color:            c.Color,
-			ConfigID:         c.ConfigId,
+			ConfigId:         c.ConfigId,
 			EngineType:       c.EngineType,
 			EngineVolume:     c.EngineVolume,
 			EnginePower:      c.EnginePower,
 			Cylinders:        c.Cylinders,
 			Transmission:     c.Transmission,
 			Drivetrain:       c.Drivetrain,
-			ModelID:          c.ModelId,
+			ModelId:          c.ModelId,
 			ModelName:        c.ModelName,
 			Make:             c.Make,
 			Year:             c.Year,
@@ -160,28 +160,27 @@ func (h *FeedHandler) SearchListings(w http.ResponseWriter, r *http.Request) {
 	}
 	for i, c := range grpcResp.Listings {
 		out.Listings[i] = domain.CarListing{
-			ListingID:        c.ListingId,
-			SellerID:         c.SellerId,
+			ListingId:        c.ListingId,
+			SellerId:         c.SellerId,
 			Description:      c.Description,
 			PostedAt:         c.PostedAt.AsTime(),
 			Status:           c.Status,
 			DealType:         c.DealType,
 			Price:            c.Price,
-
-			CarID:            c.CarId,
+			CarId:            c.CarId,
 			Mileage:          c.Mileage,
 			OwnersCount:      c.OwnersCount,
 			AccidentsCount:   c.AccidentsCount,
 			Condition:        c.Condition,
 			Color:            c.Color,
-			ConfigID:         c.ConfigId,
+			ConfigId:         c.ConfigId,
 			EngineType:       c.EngineType,
 			EngineVolume:     c.EngineVolume,
 			EnginePower:      c.EnginePower,
 			Cylinders:        c.Cylinders,
 			Transmission:     c.Transmission,
 			Drivetrain:       c.Drivetrain,
-			ModelID:          c.ModelId,
+			ModelId:          c.ModelId,
 			ModelName:        c.ModelName,
 			Make:             c.Make,
 			Year:             c.Year,
@@ -213,27 +212,27 @@ func (h *FeedHandler) GetListing(w http.ResponseWriter, r *http.Request) {
 
 	out := domain.GetListingResponse{
 		Listing: domain.CarListing{
-			ListingID:        grpcResp.Listing.ListingId,
-			SellerID:         grpcResp.Listing.SellerId,
+			ListingId:        grpcResp.Listing.ListingId,
+			SellerId:         grpcResp.Listing.SellerId,
 			Description:      grpcResp.Listing.Description,
 			PostedAt:         grpcResp.Listing.PostedAt.AsTime(),
 			Status:           grpcResp.Listing.Status,
 			DealType:         grpcResp.Listing.DealType,
 			Price:            grpcResp.Listing.Price,
-			CarID:            grpcResp.Listing.CarId,
+			CarId:            grpcResp.Listing.CarId,
 			Mileage:          grpcResp.Listing.Mileage,
 			OwnersCount:      grpcResp.Listing.OwnersCount,
 			AccidentsCount:   grpcResp.Listing.AccidentsCount,
 			Condition:        grpcResp.Listing.Condition,
 			Color:            grpcResp.Listing.Color,
-			ConfigID:         grpcResp.Listing.ConfigId,
+			ConfigId:         grpcResp.Listing.ConfigId,
 			EngineType:       grpcResp.Listing.EngineType,
 			EngineVolume:     grpcResp.Listing.EngineVolume,
 			EnginePower:      grpcResp.Listing.EnginePower,
 			Cylinders:        grpcResp.Listing.Cylinders,
 			Transmission:     grpcResp.Listing.Transmission,
 			Drivetrain:       grpcResp.Listing.Drivetrain,
-			ModelID:          grpcResp.Listing.ModelId,
+			ModelId:          grpcResp.Listing.ModelId,
 			ModelName:        grpcResp.Listing.ModelName,
 			Make:             grpcResp.Listing.Make,
 			Year:             grpcResp.Listing.Year,
@@ -260,11 +259,36 @@ func (h *FeedHandler) CreateListing(w http.ResponseWriter, r *http.Request) {
 	}
 
 	grpcReq := &feed.CreateListingRequest{Listing: &feed.CarListing{
-		SellerId:    body.Listing.SellerID,
+		SellerId:    body.Listing.SellerId,
 		Description: body.Listing.Description,
 		Status:      body.Listing.Status,
 		DealType:    body.Listing.DealType,
 		Price:       body.Listing.Price,
+		Tags:		 body.Listing.Tags,
+		CarId: 		 body.Listing.CarId,
+		Mileage: 	 body.Listing.Mileage,
+		OwnersCount: body.Listing.OwnersCount,
+		AccidentsCount: body.Listing.AccidentsCount,
+		Condition: 	 body.Listing.Condition,
+		Color: 		 body.Listing.Color,
+		ConfigId: 	 body.Listing.ConfigId,
+		EngineType:       body.Listing.EngineType,
+		EngineVolume:     body.Listing.EngineVolume,
+		EnginePower:      body.Listing.EnginePower,
+		Cylinders:        body.Listing.Cylinders,
+		Transmission:     body.Listing.Transmission,
+		Drivetrain:       body.Listing.Drivetrain,
+		ModelId:          body.Listing.ModelId,
+		ModelName:        body.Listing.ModelName,
+		Make:             body.Listing.Make,
+		Year:             body.Listing.Year,
+		BodyType:         body.Listing.BodyType,
+		Generation:       body.Listing.Generation,
+		WeightKg:         body.Listing.WeightKg,
+		SellerName:       body.Listing.SellerName,
+		SellerRating:     body.Listing.SellerRating,
+		SellerSalesCount: body.Listing.SellerSalesCount,
+		SellerIsBusiness: body.Listing.SellerIsBusiness,
 	}}
 	log.Info("→ gRPC CreateListing", slog.Any("req", grpcReq))
 
@@ -276,12 +300,37 @@ func (h *FeedHandler) CreateListing(w http.ResponseWriter, r *http.Request) {
 
 	out := domain.CreateListingResponse{
 		Listing: domain.CarListing{
-			ListingID: grpcResp.Listing.ListingId,
-			SellerID:  grpcResp.Listing.SellerId,
-			Description: grpcResp.Listing.Description,
-			Status:       grpcResp.Listing.Status,
-			DealType:     grpcResp.Listing.DealType,
-			Price:        grpcResp.Listing.Price,
+			ListingId:        grpcResp.Listing.ListingId,
+			SellerId:         grpcResp.Listing.SellerId,
+			Description:      grpcResp.Listing.Description,
+			PostedAt:         grpcResp.Listing.PostedAt.AsTime(),
+			Status:           grpcResp.Listing.Status,
+			DealType:         grpcResp.Listing.DealType,
+			Price:            grpcResp.Listing.Price,
+			CarId:            grpcResp.Listing.CarId,
+			Mileage:          grpcResp.Listing.Mileage,
+			OwnersCount:      grpcResp.Listing.OwnersCount,
+			AccidentsCount:   grpcResp.Listing.AccidentsCount,
+			Condition:        grpcResp.Listing.Condition,
+			Color:            grpcResp.Listing.Color,
+			ConfigId:         grpcResp.Listing.ConfigId,
+			EngineType:       grpcResp.Listing.EngineType,
+			EngineVolume:     grpcResp.Listing.EngineVolume,
+			EnginePower:      grpcResp.Listing.EnginePower,
+			Cylinders:        grpcResp.Listing.Cylinders,
+			Transmission:     grpcResp.Listing.Transmission,
+			Drivetrain:       grpcResp.Listing.Drivetrain,
+			ModelId:          grpcResp.Listing.ModelId,
+			ModelName:        grpcResp.Listing.ModelName,
+			Make:             grpcResp.Listing.Make,
+			Year:             grpcResp.Listing.Year,
+			BodyType:         grpcResp.Listing.BodyType,
+			Generation:       grpcResp.Listing.Generation,
+			WeightKg:         grpcResp.Listing.WeightKg,
+			SellerName:       grpcResp.Listing.SellerName,
+			SellerRating:     grpcResp.Listing.SellerRating,
+			SellerSalesCount: grpcResp.Listing.SellerSalesCount,
+			SellerIsBusiness: grpcResp.Listing.SellerIsBusiness,
 		},
 	}
 	utils.RenderJson(w, out)
@@ -290,22 +339,46 @@ func (h *FeedHandler) CreateListing(w http.ResponseWriter, r *http.Request) {
 func (h *FeedHandler) UpdateListing(w http.ResponseWriter, r *http.Request) {
 	log := h.logger.With(slog.String("op", "UpdateListing"))
 
-	listingID := mux.Vars(r)["listingId"]
+	listingId := mux.Vars(r)["listingId"]
 	var body domain.UpdateListingRequest
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w, "bad JSON: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-	body.Listing.ListingID = listingID
+	body.Listing.ListingId = listingId
 
 	grpcReq := &feed.UpdateListingRequest{
 		Listing: &feed.CarListing{
-			ListingId:   listingID,
-			SellerId:    body.Listing.SellerID,
+			SellerId:    body.Listing.SellerId,
 			Description: body.Listing.Description,
 			Status:      body.Listing.Status,
 			DealType:    body.Listing.DealType,
 			Price:       body.Listing.Price,
+			Tags:		 body.Listing.Tags,
+			CarId: 		 body.Listing.CarId,
+			Mileage: 	 body.Listing.Mileage,
+			OwnersCount: body.Listing.OwnersCount,
+			AccidentsCount: body.Listing.AccidentsCount,
+			Condition: 	 body.Listing.Condition,
+			Color: 		 body.Listing.Color,
+			ConfigId: 	 body.Listing.ConfigId,
+			EngineType:       body.Listing.EngineType,
+			EngineVolume:     body.Listing.EngineVolume,
+			EnginePower:      body.Listing.EnginePower,
+			Cylinders:        body.Listing.Cylinders,
+			Transmission:     body.Listing.Transmission,
+			Drivetrain:       body.Listing.Drivetrain,
+			ModelId:          body.Listing.ModelId,
+			ModelName:        body.Listing.ModelName,
+			Make:             body.Listing.Make,
+			Year:             body.Listing.Year,
+			BodyType:         body.Listing.BodyType,
+			Generation:       body.Listing.Generation,
+			WeightKg:         body.Listing.WeightKg,
+			SellerName:       body.Listing.SellerName,
+			SellerRating:     body.Listing.SellerRating,
+			SellerSalesCount: body.Listing.SellerSalesCount,
+			SellerIsBusiness: body.Listing.SellerIsBusiness,
 		},
 	}
 
@@ -318,12 +391,37 @@ func (h *FeedHandler) UpdateListing(w http.ResponseWriter, r *http.Request) {
 
 	out := domain.UpdateListingResponse{
 		Listing: domain.CarListing{
-			ListingID: grpcResp.Listing.ListingId,
-			SellerID:  grpcResp.Listing.SellerId,
-			Description: grpcResp.Listing.Description,
-			Status:       grpcResp.Listing.Status,
-			DealType:     grpcResp.Listing.DealType,
-			Price:        grpcResp.Listing.Price,
+			ListingId:        grpcResp.Listing.ListingId,
+			SellerId:         grpcResp.Listing.SellerId,
+			Description:      grpcResp.Listing.Description,
+			PostedAt:         grpcResp.Listing.PostedAt.AsTime(),
+			Status:           grpcResp.Listing.Status,
+			DealType:         grpcResp.Listing.DealType,
+			Price:            grpcResp.Listing.Price,
+			CarId:            grpcResp.Listing.CarId,
+			Mileage:          grpcResp.Listing.Mileage,
+			OwnersCount:      grpcResp.Listing.OwnersCount,
+			AccidentsCount:   grpcResp.Listing.AccidentsCount,
+			Condition:        grpcResp.Listing.Condition,
+			Color:            grpcResp.Listing.Color,
+			ConfigId:         grpcResp.Listing.ConfigId,
+			EngineType:       grpcResp.Listing.EngineType,
+			EngineVolume:     grpcResp.Listing.EngineVolume,
+			EnginePower:      grpcResp.Listing.EnginePower,
+			Cylinders:        grpcResp.Listing.Cylinders,
+			Transmission:     grpcResp.Listing.Transmission,
+			Drivetrain:       grpcResp.Listing.Drivetrain,
+			ModelId:          grpcResp.Listing.ModelId,
+			ModelName:        grpcResp.Listing.ModelName,
+			Make:             grpcResp.Listing.Make,
+			Year:             grpcResp.Listing.Year,
+			BodyType:         grpcResp.Listing.BodyType,
+			Generation:       grpcResp.Listing.Generation,
+			WeightKg:         grpcResp.Listing.WeightKg,
+			SellerName:       grpcResp.Listing.SellerName,
+			SellerRating:     grpcResp.Listing.SellerRating,
+			SellerSalesCount: grpcResp.Listing.SellerSalesCount,
+			SellerIsBusiness: grpcResp.Listing.SellerIsBusiness,
 		},
 	}
 	utils.RenderJson(w, out)
@@ -332,11 +430,11 @@ func (h *FeedHandler) UpdateListing(w http.ResponseWriter, r *http.Request) {
 func (h *FeedHandler) DeleteListing(w http.ResponseWriter, r *http.Request) {
 	log := h.logger.With(slog.String("op", "DeleteListing"))
 
-	listingID := mux.Vars(r)["listingId"]
-	log.Info("→ gRPC DeleteListing", slog.String("id", listingID))
+	listingId := mux.Vars(r)["listingId"]
+	log.Info("→ gRPC DeleteListing", slog.String("Id", listingId))
 
 	grpcResp, err := h.client.DeleteListing(r.Context(), &feed.DeleteListingRequest{
-		ListingId: listingID,
+		ListingId: listingId,
 	})
 	if err != nil {
 		utils.HandleResponseErr(w, h.logger, "DeleteListing failed: ", err)
@@ -350,7 +448,7 @@ func (h *FeedHandler) DeleteListing(w http.ResponseWriter, r *http.Request) {
 func (h *FeedHandler) AddToFavorites(w http.ResponseWriter, r *http.Request) {
 	log := h.logger.With(slog.String("op", "AddToFavorites"))
 
-	userID := mux.Vars(r)["userId"]
+	userId := mux.Vars(r)["userId"]
 	var body domain.AddToFavoritesRequest
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w, "bad JSON: "+err.Error(), http.StatusBadRequest)
@@ -358,8 +456,8 @@ func (h *FeedHandler) AddToFavorites(w http.ResponseWriter, r *http.Request) {
 	}
 
 	grpcReq := &feed.AddToFavoritesRequest{
-		UserId:    userID,
-		ListingId: body.ListingID,
+		UserId:    userId,
+		ListingId: body.ListingId,
 	}
 
 	log.Info("→ gRPC AddToFavorites", slog.Any("req", grpcReq))
