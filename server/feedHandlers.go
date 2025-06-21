@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	feed "github.com/nikita-itmo-gh-acc/car_estimator_api_contracts/gen/feed_v1"
 	"github.com/nikita-itmo-gh-acc/car_estimator_api_gateway/domain"
+	"github.com/nikita-itmo-gh-acc/car_estimator_api_gateway/mappers"
 	"github.com/nikita-itmo-gh-acc/car_estimator_api_gateway/utils"
 	"google.golang.org/grpc"
 )
@@ -77,39 +78,7 @@ func (h *FeedHandler) ListListings(w http.ResponseWriter, r *http.Request) {
 		Listings: make([]domain.CarListing, len(grpcResp.Listings)),
 	}
 	for i, c := range grpcResp.Listings {
-		out.Listings[i] = domain.CarListing{
-			ListingId:        c.ListingId,
-			SellerId:         c.SellerId,
-			Description:      c.Description,
-			PostedAt:         c.PostedAt.AsTime(),
-			Status:           c.Status,
-			DealType:         c.DealType,
-			Price:            c.Price,
-			CarId:            c.CarId,
-			Mileage:          c.Mileage,
-			OwnersCount:      c.OwnersCount,
-			AccidentsCount:   c.AccidentsCount,
-			Condition:        c.Condition,
-			Color:            c.Color,
-			ConfigId:         c.ConfigId,
-			EngineType:       c.EngineType,
-			EngineVolume:     c.EngineVolume,
-			EnginePower:      c.EnginePower,
-			Cylinders:        c.Cylinders,
-			Transmission:     c.Transmission,
-			Drivetrain:       c.Drivetrain,
-			ModelId:          c.ModelId,
-			ModelName:        c.ModelName,
-			Make:             c.Make,
-			Year:             c.Year,
-			BodyType:         c.BodyType,
-			Generation:       c.Generation,
-			WeightKg:         c.WeightKg,
-			SellerName:       c.SellerName,
-			SellerRating:     c.SellerRating,
-			SellerSalesCount: c.SellerSalesCount,
-			SellerIsBusiness: c.SellerIsBusiness,
-		}
+		out.Listings[i] = *mappers.ToDomain(c)
 	}
 
 	utils.RenderJson(w, out)
@@ -159,39 +128,7 @@ func (h *FeedHandler) SearchListings(w http.ResponseWriter, r *http.Request) {
 		Listings: make([]domain.CarListing, len(grpcResp.Listings)),
 	}
 	for i, c := range grpcResp.Listings {
-		out.Listings[i] = domain.CarListing{
-			ListingId:        c.ListingId,
-			SellerId:         c.SellerId,
-			Description:      c.Description,
-			PostedAt:         c.PostedAt.AsTime(),
-			Status:           c.Status,
-			DealType:         c.DealType,
-			Price:            c.Price,
-			CarId:            c.CarId,
-			Mileage:          c.Mileage,
-			OwnersCount:      c.OwnersCount,
-			AccidentsCount:   c.AccidentsCount,
-			Condition:        c.Condition,
-			Color:            c.Color,
-			ConfigId:         c.ConfigId,
-			EngineType:       c.EngineType,
-			EngineVolume:     c.EngineVolume,
-			EnginePower:      c.EnginePower,
-			Cylinders:        c.Cylinders,
-			Transmission:     c.Transmission,
-			Drivetrain:       c.Drivetrain,
-			ModelId:          c.ModelId,
-			ModelName:        c.ModelName,
-			Make:             c.Make,
-			Year:             c.Year,
-			BodyType:         c.BodyType,
-			Generation:       c.Generation,
-			WeightKg:         c.WeightKg,
-			SellerName:       c.SellerName,
-			SellerRating:     c.SellerRating,
-			SellerSalesCount: c.SellerSalesCount,
-			SellerIsBusiness: c.SellerIsBusiness,
-		}
+		out.Listings[i] = *mappers.ToDomain(c)
 	}
 
 	utils.RenderJson(w, out)
@@ -211,39 +148,7 @@ func (h *FeedHandler) GetListing(w http.ResponseWriter, r *http.Request) {
 	}
 
 	out := domain.GetListingResponse{
-		Listing: domain.CarListing{
-			ListingId:        grpcResp.Listing.ListingId,
-			SellerId:         grpcResp.Listing.SellerId,
-			Description:      grpcResp.Listing.Description,
-			PostedAt:         grpcResp.Listing.PostedAt.AsTime(),
-			Status:           grpcResp.Listing.Status,
-			DealType:         grpcResp.Listing.DealType,
-			Price:            grpcResp.Listing.Price,
-			CarId:            grpcResp.Listing.CarId,
-			Mileage:          grpcResp.Listing.Mileage,
-			OwnersCount:      grpcResp.Listing.OwnersCount,
-			AccidentsCount:   grpcResp.Listing.AccidentsCount,
-			Condition:        grpcResp.Listing.Condition,
-			Color:            grpcResp.Listing.Color,
-			ConfigId:         grpcResp.Listing.ConfigId,
-			EngineType:       grpcResp.Listing.EngineType,
-			EngineVolume:     grpcResp.Listing.EngineVolume,
-			EnginePower:      grpcResp.Listing.EnginePower,
-			Cylinders:        grpcResp.Listing.Cylinders,
-			Transmission:     grpcResp.Listing.Transmission,
-			Drivetrain:       grpcResp.Listing.Drivetrain,
-			ModelId:          grpcResp.Listing.ModelId,
-			ModelName:        grpcResp.Listing.ModelName,
-			Make:             grpcResp.Listing.Make,
-			Year:             grpcResp.Listing.Year,
-			BodyType:         grpcResp.Listing.BodyType,
-			Generation:       grpcResp.Listing.Generation,
-			WeightKg:         grpcResp.Listing.WeightKg,
-			SellerName:       grpcResp.Listing.SellerName,
-			SellerRating:     grpcResp.Listing.SellerRating,
-			SellerSalesCount: grpcResp.Listing.SellerSalesCount,
-			SellerIsBusiness: grpcResp.Listing.SellerIsBusiness,
-		},
+		Listing: *mappers.ToDomain(grpcResp.Listing),
 	}
 
 	utils.RenderJson(w, out)
@@ -258,38 +163,9 @@ func (h *FeedHandler) CreateListing(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	grpcReq := &feed.CreateListingRequest{Listing: &feed.CarListing{
-		SellerId:    body.Listing.SellerId,
-		Description: body.Listing.Description,
-		Status:      body.Listing.Status,
-		DealType:    body.Listing.DealType,
-		Price:       body.Listing.Price,
-		Tags:		 body.Listing.Tags,
-		CarId: 		 body.Listing.CarId,
-		Mileage: 	 body.Listing.Mileage,
-		OwnersCount: body.Listing.OwnersCount,
-		AccidentsCount: body.Listing.AccidentsCount,
-		Condition: 	 body.Listing.Condition,
-		Color: 		 body.Listing.Color,
-		ConfigId: 	 body.Listing.ConfigId,
-		EngineType:       body.Listing.EngineType,
-		EngineVolume:     body.Listing.EngineVolume,
-		EnginePower:      body.Listing.EnginePower,
-		Cylinders:        body.Listing.Cylinders,
-		Transmission:     body.Listing.Transmission,
-		Drivetrain:       body.Listing.Drivetrain,
-		ModelId:          body.Listing.ModelId,
-		ModelName:        body.Listing.ModelName,
-		Make:             body.Listing.Make,
-		Year:             body.Listing.Year,
-		BodyType:         body.Listing.BodyType,
-		Generation:       body.Listing.Generation,
-		WeightKg:         body.Listing.WeightKg,
-		SellerName:       body.Listing.SellerName,
-		SellerRating:     body.Listing.SellerRating,
-		SellerSalesCount: body.Listing.SellerSalesCount,
-		SellerIsBusiness: body.Listing.SellerIsBusiness,
-	}}
+	grpcReq := &feed.CreateListingRequest{
+		Listing: mappers.ToMessage(&body.Listing),
+	}
 	log.Info("→ gRPC CreateListing", slog.Any("req", grpcReq))
 
 	grpcResp, err := h.client.CreateListing(r.Context(), grpcReq)
@@ -299,39 +175,7 @@ func (h *FeedHandler) CreateListing(w http.ResponseWriter, r *http.Request) {
 	}
 
 	out := domain.CreateListingResponse{
-		Listing: domain.CarListing{
-			ListingId:        grpcResp.Listing.ListingId,
-			SellerId:         grpcResp.Listing.SellerId,
-			Description:      grpcResp.Listing.Description,
-			PostedAt:         grpcResp.Listing.PostedAt.AsTime(),
-			Status:           grpcResp.Listing.Status,
-			DealType:         grpcResp.Listing.DealType,
-			Price:            grpcResp.Listing.Price,
-			CarId:            grpcResp.Listing.CarId,
-			Mileage:          grpcResp.Listing.Mileage,
-			OwnersCount:      grpcResp.Listing.OwnersCount,
-			AccidentsCount:   grpcResp.Listing.AccidentsCount,
-			Condition:        grpcResp.Listing.Condition,
-			Color:            grpcResp.Listing.Color,
-			ConfigId:         grpcResp.Listing.ConfigId,
-			EngineType:       grpcResp.Listing.EngineType,
-			EngineVolume:     grpcResp.Listing.EngineVolume,
-			EnginePower:      grpcResp.Listing.EnginePower,
-			Cylinders:        grpcResp.Listing.Cylinders,
-			Transmission:     grpcResp.Listing.Transmission,
-			Drivetrain:       grpcResp.Listing.Drivetrain,
-			ModelId:          grpcResp.Listing.ModelId,
-			ModelName:        grpcResp.Listing.ModelName,
-			Make:             grpcResp.Listing.Make,
-			Year:             grpcResp.Listing.Year,
-			BodyType:         grpcResp.Listing.BodyType,
-			Generation:       grpcResp.Listing.Generation,
-			WeightKg:         grpcResp.Listing.WeightKg,
-			SellerName:       grpcResp.Listing.SellerName,
-			SellerRating:     grpcResp.Listing.SellerRating,
-			SellerSalesCount: grpcResp.Listing.SellerSalesCount,
-			SellerIsBusiness: grpcResp.Listing.SellerIsBusiness,
-		},
+		Listing: *mappers.ToDomain(grpcResp.GetListing()),
 	}
 	utils.RenderJson(w, out)
 }
@@ -348,38 +192,7 @@ func (h *FeedHandler) UpdateListing(w http.ResponseWriter, r *http.Request) {
 	body.Listing.ListingId = listingId
 
 	grpcReq := &feed.UpdateListingRequest{
-		Listing: &feed.CarListing{
-			SellerId:    body.Listing.SellerId,
-			Description: body.Listing.Description,
-			Status:      body.Listing.Status,
-			DealType:    body.Listing.DealType,
-			Price:       body.Listing.Price,
-			Tags:		 body.Listing.Tags,
-			CarId: 		 body.Listing.CarId,
-			Mileage: 	 body.Listing.Mileage,
-			OwnersCount: body.Listing.OwnersCount,
-			AccidentsCount: body.Listing.AccidentsCount,
-			Condition: 	 body.Listing.Condition,
-			Color: 		 body.Listing.Color,
-			ConfigId: 	 body.Listing.ConfigId,
-			EngineType:       body.Listing.EngineType,
-			EngineVolume:     body.Listing.EngineVolume,
-			EnginePower:      body.Listing.EnginePower,
-			Cylinders:        body.Listing.Cylinders,
-			Transmission:     body.Listing.Transmission,
-			Drivetrain:       body.Listing.Drivetrain,
-			ModelId:          body.Listing.ModelId,
-			ModelName:        body.Listing.ModelName,
-			Make:             body.Listing.Make,
-			Year:             body.Listing.Year,
-			BodyType:         body.Listing.BodyType,
-			Generation:       body.Listing.Generation,
-			WeightKg:         body.Listing.WeightKg,
-			SellerName:       body.Listing.SellerName,
-			SellerRating:     body.Listing.SellerRating,
-			SellerSalesCount: body.Listing.SellerSalesCount,
-			SellerIsBusiness: body.Listing.SellerIsBusiness,
-		},
+		Listing: mappers.ToMessage(&body.Listing),
 	}
 
 	log.Info("→ gRPC UpdateListing", slog.Any("req", grpcReq))
@@ -390,39 +203,7 @@ func (h *FeedHandler) UpdateListing(w http.ResponseWriter, r *http.Request) {
 	}
 
 	out := domain.UpdateListingResponse{
-		Listing: domain.CarListing{
-			ListingId:        grpcResp.Listing.ListingId,
-			SellerId:         grpcResp.Listing.SellerId,
-			Description:      grpcResp.Listing.Description,
-			PostedAt:         grpcResp.Listing.PostedAt.AsTime(),
-			Status:           grpcResp.Listing.Status,
-			DealType:         grpcResp.Listing.DealType,
-			Price:            grpcResp.Listing.Price,
-			CarId:            grpcResp.Listing.CarId,
-			Mileage:          grpcResp.Listing.Mileage,
-			OwnersCount:      grpcResp.Listing.OwnersCount,
-			AccidentsCount:   grpcResp.Listing.AccidentsCount,
-			Condition:        grpcResp.Listing.Condition,
-			Color:            grpcResp.Listing.Color,
-			ConfigId:         grpcResp.Listing.ConfigId,
-			EngineType:       grpcResp.Listing.EngineType,
-			EngineVolume:     grpcResp.Listing.EngineVolume,
-			EnginePower:      grpcResp.Listing.EnginePower,
-			Cylinders:        grpcResp.Listing.Cylinders,
-			Transmission:     grpcResp.Listing.Transmission,
-			Drivetrain:       grpcResp.Listing.Drivetrain,
-			ModelId:          grpcResp.Listing.ModelId,
-			ModelName:        grpcResp.Listing.ModelName,
-			Make:             grpcResp.Listing.Make,
-			Year:             grpcResp.Listing.Year,
-			BodyType:         grpcResp.Listing.BodyType,
-			Generation:       grpcResp.Listing.Generation,
-			WeightKg:         grpcResp.Listing.WeightKg,
-			SellerName:       grpcResp.Listing.SellerName,
-			SellerRating:     grpcResp.Listing.SellerRating,
-			SellerSalesCount: grpcResp.Listing.SellerSalesCount,
-			SellerIsBusiness: grpcResp.Listing.SellerIsBusiness,
-		},
+		Listing: *mappers.ToDomain(grpcResp.GetListing()),
 	}
 	utils.RenderJson(w, out)
 }
