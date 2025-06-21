@@ -10,3 +10,14 @@ type PredictionRequest struct {
 	Odometer int    `json:"odometer"`
 	Color    string `json:"color"`
 }
+
+type PredictionResponse struct {
+	Price     int      `json:"price"`
+	SellCount int      `json:"sell_count"`
+	Urls      []string `json:"urls"`
+	GraphImg  string   `json:"graph_img"`
+}
+
+type ImageResponse struct {
+	Urls []string `json:"urls"`
+}

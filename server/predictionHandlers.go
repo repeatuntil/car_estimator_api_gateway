@@ -1,11 +1,9 @@
 package server
 
 import (
-	"bytes"
+	"encoding/base64"
 	"fmt"
-	"io"
 	"log/slog"
-	"mime/multipart"
 	"net/http"
 	"strconv"
 
@@ -29,6 +27,58 @@ func (h *PredictionHandler) setupgRPC(conn *grpc.ClientConn) {
 
 func (h *PredictionHandler) setupRoutes() {
 	h.r.HandleFunc("", h.PredictionHandler).Methods("POST")
+	h.r.HandleFunc("/images/{make}/{model}/{year}", h.GetImagesHandler).Methods("GET")
+}
+
+func (h *PredictionHandler) GetImagesHandler(w http.ResponseWriter, r *http.Request) {
+	log := h.logger.With(
+		slog.String("operation", "get car images"),
+	)
+
+	carInfo := map[string]string{
+		"make": "",
+		"model": "",
+		"year": "",
+	}
+
+	for k := range carInfo {
+		param, ok := mux.Vars(r)[k]
+		if !ok {
+			http.Error(w, fmt.Sprintf("param %s is missing", k), http.StatusBadRequest)
+			return
+		}
+		carInfo[k] = param
+	}
+
+	log.Info(
+		"Try to retreive car images by given params...",
+		slog.Any("params", carInfo),
+	)
+
+	year, err := strconv.Atoi(carInfo["year"])
+	if err != nil {
+		http.Error(w, "year param has wrong format", http.StatusBadRequest)
+		return
+	}
+
+	response, err := h.client.GetImages(r.Context(), &model.ImagesRequest{
+		Make: carInfo["make"],
+		Model: carInfo["model"],
+		Year: int32(year),
+	})
+
+	if err != nil {
+		utils.HandleResponseErr(w, h.logger, "image retreive operation failed - ", err)
+		return
+	}
+
+	log.Info(
+		"Successfully received car images!",
+	)
+
+	utils.RenderJson(w, domain.ImageResponse{
+		Urls: response.PhotoUrls,
+	})
 }
 
 func (h *PredictionHandler) PredictionHandler(w http.ResponseWriter, r *http.Request) {
@@ -63,30 +113,16 @@ func (h *PredictionHandler) PredictionHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	var buffer bytes.Buffer
+	imageB64 := base64.StdEncoding.EncodeToString(response.GraphPng)
+	
+	log.Info(
+		"Successfully received prediction from the model!",
+	)
 
-	mimeWriter := multipart.NewWriter(&buffer)
-	defer mimeWriter.Close()
-
-	_ = mimeWriter.WriteField("price", strconv.Itoa(int(response.GetPrice())))
-	_ = mimeWriter.WriteField("sell_count", strconv.Itoa(int(response.GetSellCount())))
-	for i, url := range response.PhotoUrls {
-		_ = mimeWriter.WriteField(fmt.Sprintf("url_%d", i), url)
-	}
-
-	imageWriter, err := mimeWriter.CreateFormFile("image", "prediction.png")
-	if err != nil {
-		http.Error(w, "Failed to create form file", http.StatusInternalServerError)
-		return
-	}
-
-	_, err = io.Copy(imageWriter, bytes.NewReader(response.GraphPng))
-	if err != nil {
-		http.Error(w, "Failed to write image data", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", mimeWriter.FormDataContentType())
-
-	w.Write(buffer.Bytes())
+	utils.RenderJson(w, &domain.PredictionResponse{
+		Price: int(response.GetPrice()),
+		SellCount: int(response.GetSellCount()),
+		Urls: response.GetPhotoUrls(),
+		GraphImg: imageB64,
+	})
 }
